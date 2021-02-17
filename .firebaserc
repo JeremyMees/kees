@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "shopping-list-be788": {
+      "hosting": {
+        "app": [
+          "shopping-list-be788"
+        ]
+      }
+    }
+  }
+}

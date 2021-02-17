@@ -1,17 +1,58 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+    <ion-title> Money please </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
+      <ion-title size="large">Money please</ion-title>
     </ion-toolbar>
   </ion-header>
+  <div class="container">
+    <ion-input
+      clearInput
+      type="text"
+      placeholder="How much"
+      #quantity
+    ></ion-input>
+    <ion-input
+      clearInput
+      type="text"
+      placeholder="Description"
+      #description
+    ></ion-input>
+    <ion-button
+      expand="block"
+      color="tertiary"
+      (click)="addItem(quantity.value, description.value)"
+      (click)="description.value = ''"
+      (click)="quantity.value = ''"
+      >Add</ion-button
+    >
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+    <ion-grid class="ion-margin" [hidden]="listItems.length == 0">
+      <ion-row>
+        <ion-col>Quantity</ion-col>
+        <ion-col>Description</ion-col>
+        <ion-col>Delete</ion-col>
+      </ion-row>
+      <ion-row *ngFor="let item of listItems; index as i">
+        <ion-col>{{ item.quantity }}&euro;</ion-col>
+        <ion-col>{{ item.description }}</ion-col>
+        <ion-col
+          ><ion-button
+            (click)="deleteListItem(item)"
+            size="small"
+            color="tertiary"
+            ><ion-icon name="trash"></ion-icon></ion-button
+        ></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>Total</ion-col>
+        <ion-col>{{getTotalCost()}}&euro;</ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>
