@@ -12,7 +12,7 @@ export class Tab2Page implements OnInit {
 
   ngOnInit(): void {
     const result = this.firebase.getListItems();
-    result.forEach((item) => {
+    result.subscribe((item) => {
       this.listItems = item;
     });
   }

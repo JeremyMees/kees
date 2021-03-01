@@ -12,8 +12,8 @@ export class Tab1Page {
 
   ngOnInit(): void {
     const result = this.firebase.getFoodItems();
-    result.forEach((item) => {
-      this.foodItems = item;
+    result.subscribe((items) => {
+      this.foodItems = items;
     });
   }
 

@@ -1,29 +1,32 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Food please</ion-title>
+    <ion-title> List please</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="medium">List please</ion-title>
     </ion-toolbar>
   </ion-header>
   <div class="container">
-    <ion-input
-      clearInput
-      type="text"
-      placeholder="New product..."
-      #item
-    ></ion-input>
-    <ion-button
-      expand="block"
-      color="tertiary"
-      (click)="addItem(item.value)"
-      (click)="item.value = ''"
-      >Add</ion-button
-    >
+    <ion-item lines="none">
+      <ion-input
+        clearInput
+        type="text"
+        placeholder="New product..."
+        #item
+      ></ion-input>
+      <ion-button
+        clear
+        item-right
+        color="tertiary"
+        (click)="addItem(item.value)"
+        (click)="item.value = ''"
+        ><ion-icon name="add"></ion-icon
+      ></ion-button>
+    </ion-item>
 
     <ion-grid class="ion-margin" [hidden]="foodItems.length == 0">
       <ion-row *ngFor="let item of foodItems; index as i">

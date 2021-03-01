@@ -6,10 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class FirebaseService {
-  items: Observable<any[]>;
-  constructor(private firestore: AngularFirestore) {
-    this.items = this.firestore.collection('money').valueChanges();
-  }
+  constructor(private firestore: AngularFirestore) {}
 
   addNewListItem(quantity: number, description: string): void {
     const data = {
@@ -55,6 +52,31 @@ export class FirebaseService {
       .subscribe((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           this.firestore.collection('food').doc(`${doc.id}`).delete();
+        });
+      });
+  }
+
+  addNewRecipes(link: string, description: string): void {
+    const data = {
+      link: link,
+      description: description,
+    };
+    this.firestore.collection('recipes').add(data);
+  }
+
+  getRecipes(): Observable<any[]> {
+    return this.firestore.collection('recipes').valueChanges();
+  }
+
+  deleteRecipes(item: any): void {
+    this.firestore
+      .collection('recipes', (ref) =>
+        ref.where('description', '==', item.description)
+      )
+      .get()
+      .subscribe((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          this.firestore.collection('recipes').doc(`${doc.id}`).delete();
         });
       });
   }

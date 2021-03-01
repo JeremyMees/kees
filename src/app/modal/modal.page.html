@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add new link </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    <ion-input clearInput type="text" placeholder="Link" #link></ion-input>
+    <ion-input
+      clearInput
+      type="text"
+      placeholder="Description"
+      #description
+    ></ion-input>
+    <ion-button
+      expand="block"
+      color="tertiary"
+      (click)="addItem(link.value, description.value)"
+      (click)="link.value = ''"
+      (click)="description.value = ''"
+      >Add</ion-button
+    >
+  </div>
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button color="danger" (click)="dismiss()">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,5 +1,6 @@
 {
   "name": "kees",
+  "author": "jeremy mees",
   "integrations": {
     "capacitor": {}
   },
