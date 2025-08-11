@@ -1,7 +1,7 @@
 export default function Page() {
   return (
     <>
-      <h1>Shopping List Page</h1>
+      <h1>Bank Page</h1>
     </>
   );
 }
