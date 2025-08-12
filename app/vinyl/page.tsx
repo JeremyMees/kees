@@ -77,7 +77,7 @@ export default function Page() {
 
   return (
     <div ref={grid} className="flex-1 overflow-y-auto content pt-2 pb-8">
-      <RandomVinyl items={collection.releases.length} />
+      <RandomVinyl items={collection.pagination.items} />
       <VinylCardGrid>
         { vinyls }
       </VinylCardGrid>
