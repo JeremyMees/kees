@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/ui/Navigation";
+import PageTitle from "@/components/PageTitle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,10 +23,13 @@ export default function RootLayout({
       <body
         className={`
           ${geistSans.variable} ${geistMono.variable} antialiased
-          flex flex-col min-h-dvh justify-between
+          flex flex-col min-h-dvh max-h-dvh justify-between
         `}
       >
-        <main className="flex-1 p-4">{children}</main>
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <PageTitle />
+          {children}
+        </main>
         <Navigation />
       </body>
     </html>
