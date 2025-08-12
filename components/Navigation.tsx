@@ -10,8 +10,8 @@ export default function Navigation() {
   const linkStyles = 'size-10 flex items-center justify-center rounded-lg transition-colors duration-300'
 
   return (
-    <section className="bg-background border-t py-2 px-4">
-      <nav className="flex justify-center items-center gap-4">
+    <section className="bg-background border-t py-2">
+      <nav className="flex justify-center items-center gap-4 content">
         <Link
           href="/"
           className={`${linkStyles} ${pathname === '/' && 'bg-muted'}`}
