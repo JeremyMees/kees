@@ -40,7 +40,6 @@ export default function RecipeForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     onAdd(values)
 
-    form.setFocus('description')
     form.reset()
   }
 
@@ -53,12 +52,7 @@ export default function RecipeForm({
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <Input
-                  placeholder="Name"
-                  {...field}
-                  autoFocus
-                  autoComplete="off"
-                />
+                <Input placeholder="Name" {...field} autoComplete="off" />
               </FormControl>
               <FormMessage />
             </FormItem>

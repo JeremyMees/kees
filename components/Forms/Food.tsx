@@ -36,7 +36,6 @@ export default function FoodForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     onAdd({ item: values.item, quantity: 1 })
 
-    form.setFocus('item')
     form.reset()
   }
 
@@ -49,12 +48,7 @@ export default function FoodForm({
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <Input
-                  placeholder="Kaas"
-                  {...field}
-                  autoFocus
-                  autoComplete="off"
-                />
+                <Input placeholder="Kaas" {...field} autoComplete="off" />
               </FormControl>
               <FormMessage />
             </FormItem>

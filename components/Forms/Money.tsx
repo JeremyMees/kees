@@ -45,7 +45,6 @@ export default function MoneyForm({
       date: Date.now(),
     })
 
-    form.setFocus('description')
     form.reset()
   }
 
@@ -58,12 +57,7 @@ export default function MoneyForm({
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <Input
-                  placeholder="Name"
-                  {...field}
-                  autoFocus
-                  autoComplete="off"
-                />
+                <Input placeholder="Name" {...field} autoComplete="off" />
               </FormControl>
               <FormMessage />
             </FormItem>
