@@ -1,6 +1,7 @@
 import { Minus, Plus } from 'lucide-react'
 import { forwardRef } from 'react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export interface NumberInputProps {
   onValueChange: (value: number | undefined) => void
@@ -8,11 +9,12 @@ export interface NumberInputProps {
   min: number
   max: number
   stepper?: number
+  className?: string
 }
 
 export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
   function NumberInput(props, ref) {
-    const { stepper, min, max, onValueChange, value } = props
+    const { stepper, min, max, onValueChange, value, className } = props
 
     function handleIncrement() {
       const newValue = value + (stepper ?? 1)
@@ -25,7 +27,9 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     }
 
     return (
-      <div className="flex items-center border rounded-md w-fit">
+      <div
+        className={cn('flex items-center border rounded-md w-fit', className)}
+      >
         <Button
           variant="ghost"
           size="icon"
