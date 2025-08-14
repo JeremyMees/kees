@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -122,6 +122,6 @@
   }
 
   .content {
-    @apply  max-w-[2000px] mx-auto w-full px-4 md:px-6 lg:px-10;
+    @apply max-w-[2000px] mx-auto w-full px-4 md:px-6 lg:px-10;
   }
 }

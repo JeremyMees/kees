@@ -1,16 +1,16 @@
-"use client"
+'use client'
 
-import { foodsCollection, create, update, remove } from "@/lib/firebase.browser";
-import { onSnapshot, orderBy, query } from "firebase/firestore";
-import { Food } from "@/types/firebase";
-import { Button } from "@/components/ui/button"
-import { X } from "lucide-react";
-import FoodForm from "@/components/Forms/Food";
-import { useEffect, useState } from "react";
-import { NumberInput } from "@/components/ui/number-input";
+import { foodsCollection, create, update, remove } from '@/lib/firebase.browser'
+import { onSnapshot } from 'firebase/firestore'
+import { Food } from '@/types/firebase'
+import { Button } from '@/components/ui/button'
+import { X } from 'lucide-react'
+import FoodForm from '@/components/Forms/Food'
+import { useEffect, useState } from 'react'
+import { NumberInput } from '@/components/ui/number-input'
 
 export default function Page() {
-  const [foods, setFoods] = useState<Food[]>([]);
+  const [foods, setFoods] = useState<Food[]>([])
 
   useEffect(() => {
     const unsubscribe = onSnapshot(foodsCollection, (querySnapshot) => {
@@ -18,23 +18,28 @@ export default function Page() {
         querySnapshot.docs
           .map((doc) => ({ ...doc.data(), id: doc.id }))
           .sort((a, b) => a.item.localeCompare(b.item))
-      );
-    });
+      )
+    })
 
-    return () => unsubscribe();
-  }, []);
+    return () => unsubscribe()
+  }, [])
 
   return (
     <div className="flex flex-col gap-6 content pt-2 max-h-full overflow-y-auto">
       <FoodForm onAdd={(food) => create(foodsCollection, food)} />
       <ul className="flex flex-col pb-8 overflow-y-auto">
         {foods.map((food) => (
-          <li key={food.id} className="grid grid-cols-3 items-center gap-2 border-b text-sm py-1">
+          <li
+            key={food.id}
+            className="grid grid-cols-3 items-center gap-2 border-b text-sm py-1"
+          >
             <NumberInput
               value={food.quantity}
               min={1}
               max={100}
-              onValueChange={(value) => update(foodsCollection, food.id, { quantity: value ?? 1 })}
+              onValueChange={(value) =>
+                update(foodsCollection, food.id, { quantity: value ?? 1 })
+              }
             />
             <span className="font-semibold min-w-7">{food.item}</span>
             <Button
@@ -49,5 +54,5 @@ export default function Page() {
         ))}
       </ul>
     </div>
-  );
+  )
 }
