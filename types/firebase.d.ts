@@ -3,3 +3,9 @@ export interface Food {
   quantity: number
   id: string
 }
+
+export interface Recipe {
+  description: string
+  link: string
+  id: string
+}
