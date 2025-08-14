@@ -8,9 +8,11 @@ import { X } from 'lucide-react'
 import FoodForm from '@/components/Forms/Food'
 import { useEffect, useState } from 'react'
 import { NumberInput } from '@/components/ui/number-input'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 export default function Page() {
   const [foods, setFoods] = useState<Food[]>([])
+  const [list] = useAutoAnimate()
 
   useEffect(() => {
     const unsubscribe = onSnapshot(foodsCollection, (querySnapshot) => {
@@ -27,7 +29,7 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-6 content pt-2 max-h-full overflow-y-auto">
       <FoodForm onAdd={(food) => create(foodsCollection, food)} />
-      <ul className="flex flex-col pb-8 overflow-y-auto">
+      <ul ref={list} className="flex flex-col pb-8 overflow-y-auto">
         {foods.map((food) => (
           <li
             key={food.id}

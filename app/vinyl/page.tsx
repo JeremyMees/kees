@@ -9,6 +9,7 @@ import { Disc3, Shuffle, X } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import Count from '@/components/animation/Count'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 export default function Page() {
   const [collection, setCollection] = useState<CollectionResponse>()
@@ -137,9 +138,14 @@ function RandomVinyl({ items }: { items: number }) {
 }
 
 function VinylCardGrid({ children }: { children: React.ReactNode }) {
+  const [list] = useAutoAnimate()
+
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        ref={list}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
         {children}
       </div>
     </div>
