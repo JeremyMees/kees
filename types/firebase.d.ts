@@ -9,3 +9,10 @@ export interface Recipe {
   link: string
   id: string
 }
+
+export interface Money {
+  date: number
+  quantity: number | string
+  description: string
+  id: string
+}

@@ -26,8 +26,8 @@ export default function Navigation() {
           <CookingPot />
         </Link>
         <Link
-          href="/bank"
-          className={`${linkStyles} ${pathname === '/bank' && 'bg-muted'}`}
+          href="/money"
+          className={`${linkStyles} ${pathname === '/money' && 'bg-muted'}`}
         >
           <PiggyBank />
         </Link>

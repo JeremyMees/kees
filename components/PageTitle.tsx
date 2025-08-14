@@ -27,8 +27,8 @@ export default function PageTitle() {
       case 'recipes':
         setPage({ title: 'Recipes', icon: CookingPot })
         break
-      case 'bank':
-        setPage({ title: 'Bank', icon: PiggyBank })
+      case 'money':
+        setPage({ title: 'Money', icon: PiggyBank })
         break
       case 'vinyl':
         setPage({ title: 'Vinyl Collection', icon: Disc3 })

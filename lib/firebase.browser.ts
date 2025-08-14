@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import type { Food, Recipe } from '@/types/firebase';
+import type { Food, Money, Recipe } from '@/types/firebase';
 import {
   getFirestore,
   collection,
@@ -38,6 +38,7 @@ function assignTypes<T extends object>() {
 
 const foodsCollection = collection(db, 'food').withConverter(assignTypes<Food>())
 const recipesCollection = collection(db, 'recipes').withConverter(assignTypes<Recipe>())
+const moneyCollection = collection(db, 'money').withConverter(assignTypes<Money>())
 
 function create<T>(col: CollectionReference<T>, item: Omit<T, 'id'>) {
   addDoc(col, item);
@@ -56,6 +57,7 @@ export {
   db,
   foodsCollection,
   recipesCollection,
+  moneyCollection,
   create,
   update,
   remove
