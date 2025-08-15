@@ -44,10 +44,10 @@ export default function PageTitle() {
       {page?.icon ? (
         <page.icon key="icon" className="size-6 text-muted-foreground" />
       ) : (
-        <Skeleton key="icon" className="size-6 rounded-full" />
+        <Skeleton key="icon" className="size-8" />
       )}
       <h1 className="text-2xl font-bold">
-        {page?.title || <Skeleton className="w-2/3 h-8 rounded-full" />}
+        {page?.title || <Skeleton className="w-[153px] h-8 rounded-full" />}
       </h1>
     </div>
   )
