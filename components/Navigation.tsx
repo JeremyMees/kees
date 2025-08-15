@@ -12,30 +12,30 @@ export default function Navigation() {
 
   return (
     <section className="bg-background border-t py-2">
-      <nav className="flex justify-center items-center gap-4 content">
+      <nav className="flex justify-center items-center content">
         <Link
           href="/"
           className={`${linkStyles} ${pathname === '/' && 'bg-muted'}`}
         >
-          <ShoppingCart />
+          <ShoppingCart className="size-4" />
         </Link>
         <Link
           href="/recipes"
           className={`${linkStyles} ${pathname === '/recipes' && 'bg-muted'}`}
         >
-          <CookingPot />
+          <CookingPot className="size-4" />
         </Link>
         <Link
           href="/money"
           className={`${linkStyles} ${pathname === '/money' && 'bg-muted'}`}
         >
-          <PiggyBank />
+          <PiggyBank className="size-4" />
         </Link>
         <Link
           href="/vinyl"
           className={`${linkStyles} ${pathname === '/vinyl' && 'bg-muted'}`}
         >
-          <Disc3 />
+          <Disc3 className="size-4" />
         </Link>
       </nav>
     </section>
