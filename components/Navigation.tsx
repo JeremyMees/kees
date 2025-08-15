@@ -17,25 +17,25 @@ export default function Navigation() {
           href="/"
           className={`${linkStyles} ${pathname === '/' && 'bg-muted'}`}
         >
-          <ShoppingCart className="size-4" />
+          <ShoppingCart />
         </Link>
         <Link
           href="/recipes"
           className={`${linkStyles} ${pathname === '/recipes' && 'bg-muted'}`}
         >
-          <CookingPot className="size-4" />
+          <CookingPot />
         </Link>
         <Link
           href="/money"
           className={`${linkStyles} ${pathname === '/money' && 'bg-muted'}`}
         >
-          <PiggyBank className="size-4" />
+          <PiggyBank />
         </Link>
         <Link
           href="/vinyl"
           className={`${linkStyles} ${pathname === '/vinyl' && 'bg-muted'}`}
         >
-          <Disc3 className="size-4" />
+          <Disc3 />
         </Link>
       </nav>
     </section>
