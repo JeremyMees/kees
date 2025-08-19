@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { foodsCollection, create, update, remove } from '@/lib/firebase.browser'
 import { onSnapshot } from 'firebase/firestore'
-import { Food } from '@/types/firebase'
+import { Food, FoodType } from '@/types/firebase'
 
 import FoodForm from '@/components/Forms/Food'
 import { Button } from '@/components/ui/button'
@@ -25,45 +25,75 @@ import {
 import { X } from 'lucide-react'
 
 export default function Page() {
-  const [foods, setFoods] = useState<Food[]>([])
+  const [foodsByType, setFoodsByType] = useState<Record<FoodType, Food[]>>({} as Record<FoodType, Food[]>)
   const [selectedFood, setSelectedFood] = useState<Food>()
   const [loading, setLoading] = useState(true)
   const [list] = useAutoAnimate()
 
   useEffect(() => {
     const unsubscribe = onSnapshot(foodsCollection, (querySnapshot) => {
-      setFoods(
-        querySnapshot.docs
-          .map((doc) => ({ ...doc.data(), id: doc.id }))
-          .sort((a, b) => a.item.localeCompare(b.item))
-      )
+      const foods = querySnapshot.docs
+        .map((doc) => ({ ...doc.data(), id: doc.id }))
+
+      const grouped = foods.reduce((acc, food) => {
+        if (!acc[food.type]) {
+          acc[food.type] = []
+        }
+        acc[food.type].push(food)
+        return acc
+      }, {} as Record<FoodType, Food[]>)
+
+      Object.keys(grouped).forEach((type) => {
+        grouped[type as FoodType].sort((a, b) => a.item.localeCompare(b.item))
+      })
+
+      setFoodsByType(grouped)
       setLoading(false)
     })
 
     return () => unsubscribe()
   }, [])
 
+
+  const typeOrder: FoodType[] = ['Other', 'Dry Goods', 'Fridge', 'Bread', 'Freezer', 'Cans']
+
   return (
     <div className="flex flex-col gap-6 content pt-2 max-h-full overflow-y-auto">
       <FoodForm onAdd={(food) => create(foodsCollection, food)} />
       <AlertDialog>
         <div className="flex flex-col pb-8">
-          {foods.length === 0 && !loading ? (
+          {Object.keys(foodsByType).length === 0 && !loading ? (
             <span className="w-fit text-muted-foreground mx-auto pt-10">
               No food items found.
             </span>
           ) : (
-            <ul ref={list} className="flex flex-col overflow-y-auto">
-              {loading
-                ? Array.from({ length: 10 }).map((_, i) => <FoodSkeleton key={i} />)
-                : foods.map((food) => (
-                    <FoodItem
-                      key={food.id}
-                      food={food}
-                      onDelete={() => setSelectedFood(food)}
-                    />
-                  ))}
-            </ul>
+            <div ref={list} className="flex flex-col overflow-y-auto">
+              {loading ? (
+                Array.from({ length: 10 }).map((_, i) => <FoodSkeleton key={i} />)
+              ) : (
+                typeOrder.map((type) => {
+                  const typeFoods = foodsByType[type]
+                  if (!typeFoods || typeFoods.length === 0) return null
+
+                  return (
+                    <div key={type} className="mb-4">
+                      <h3 className="text-muted-foreground pb-1 border-b text-sm font-semibold">
+                        {type}
+                      </h3>
+                      <ul className="flex flex-col">
+                        {typeFoods.map((food) => (
+                          <FoodItem
+                            key={food.id}
+                            food={food}
+                            onDelete={() => setSelectedFood(food)}
+                          />
+                        ))}
+                      </ul>
+                    </div>
+                  )
+                })
+              )}
+            </div>
           )}
         </div>
         <AlertDialogContent>

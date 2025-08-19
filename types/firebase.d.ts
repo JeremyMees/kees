@@ -1,6 +1,9 @@
+export type FoodType = 'Other' | 'Fridge' | 'Freezer' | 'Cans' | 'Dry Goods' | 'Bread'
+
 export interface Food {
   item: string
   quantity: number
+  type: FoodType
   id: string
 }
 
