@@ -27,7 +27,7 @@ export default function MoneyForm({
     quantity: z
       .string()
       .min(1, { message: 'Quantity must be at least 1.' })
-      .regex(/^-?\d+$/, { message: 'Quantity must be a number.' }),
+      .regex(/^-?\d+(\.\d{1,2})?$/, { message: 'Quantity must be a number.' }),
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
