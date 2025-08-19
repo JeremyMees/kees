@@ -47,17 +47,25 @@ export default function Page() {
     <div className="flex flex-col gap-6 content pt-2 max-h-full overflow-y-auto">
       <FoodForm onAdd={(food) => create(foodsCollection, food)} />
       <AlertDialog>
-        <ul ref={list} className="flex flex-col pb-8 overflow-y-auto">
-          {loading
-            ? Array.from({ length: 10 }).map((_, i) => <FoodSkeleton key={i} />)
-            : foods.map((food) => (
-                <FoodItem
-                  key={food.id}
-                  food={food}
-                  onDelete={() => setSelectedFood(food)}
-                />
-              ))}
-        </ul>
+        <div className="flex flex-col pb-8">
+          {foods.length === 0 && !loading ? (
+            <span className="w-fit text-muted-foreground mx-auto pt-10">
+              No food items found.
+            </span>
+          ) : (
+            <ul ref={list} className="flex flex-col overflow-y-auto">
+              {loading
+                ? Array.from({ length: 10 }).map((_, i) => <FoodSkeleton key={i} />)
+                : foods.map((food) => (
+                    <FoodItem
+                      key={food.id}
+                      food={food}
+                      onDelete={() => setSelectedFood(food)}
+                    />
+                  ))}
+            </ul>
+          )}
+        </div>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remove {selectedFood?.item}?</AlertDialogTitle>
