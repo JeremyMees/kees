@@ -27,49 +27,27 @@ export default function Page() {
   const [money, setMoney] = useState<Money[]>([])
   const [selectedMoney, setSelectedMoney] = useState<Money>()
   const [loading, setLoading] = useState(true)
-  const [list] = useAutoAnimate()
 
   useEffect(() => {
     const unsubscribe = onSnapshot(moneyCollection, (querySnapshot) => {
       setMoney(
         querySnapshot.docs
           .map((doc) => ({ ...doc.data(), id: doc.id }))
-          .sort((a, b) => a.date - b.date)
+          .sort((a, b) => b.date - a.date)
       )
       setLoading(false)
     })
 
     return () => unsubscribe()
   }, [])
-
+  
   return (
     <div className="flex flex-col gap-6 content pt-2 max-h-full overflow-y-auto">
       <MoneyForm onAdd={(money) => create(moneyCollection, money)} />
       <AlertDialog>
         <div className="flex flex-col gap-2 pb-8">
-          <ul ref={list} className="flex flex-col overflow-y-auto">
-            {loading
-              ? Array.from({ length: 10 }).map((_, i) => (
-                  <MoneySkeleton key={i} />
-                ))
-              : money.map((money) => (
-                  <MoneyItem
-                    key={money.id}
-                    money={money}
-                    onDelete={() => setSelectedMoney(money)}
-                  />
-                ))}
-          </ul>
-          {loading ? (
-            <Skeleton className="w-17 h-5" />
-          ) : (
-            <div className="flex flex-col gap-2">
-              <span className="text-sm font-semibold w-fit">
-                Total: €
-                {money.reduce((acc, curr) => acc + Number(curr.quantity), 0)}
-              </span>
-            </div>
-          )}
+          <MoneyItems loading={loading} money={money} setSelectedMoney={setSelectedMoney} />
+          <MoneyTotal loading={loading} money={money} />
         </div>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -97,6 +75,51 @@ export default function Page() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  )
+}
+
+function MoneyTotal({ loading, money }: { loading: boolean, money: Money[] }) {
+  if (loading) return <Skeleton className="w-17 h-5" />
+
+  if (money.length === 0) return null
+
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-sm font-semibold w-fit">
+        Total: €
+        {money.reduce((acc, curr) => acc + Number(curr.quantity), 0)}
+      </span>
+    </div>
+  )
+}
+
+function MoneyItems({
+  loading,
+  money,
+  setSelectedMoney,
+}: {
+  loading: boolean
+  money: Money[]
+  setSelectedMoney: (money: Money) => void
+}) {
+  const [list] = useAutoAnimate()
+
+  const listItems = loading
+    ? Array.from({ length: 10 }).map((_, i) => <MoneySkeleton key={i} />)
+    : money.map((money) => (<MoneyItem key={money.id} money={money} onDelete={() => setSelectedMoney(money)} />))
+  
+  if (money.length === 0 && !loading) {
+    return (
+      <span className="w-fit text-muted-foreground mx-auto pt-10">
+        No money items found.
+      </span>
+    )
+  }
+
+  return (
+    <ul ref={list} className="flex flex-col overflow-y-auto">
+      {listItems}
+    </ul>
   )
 }
 

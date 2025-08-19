@@ -12,7 +12,7 @@ export interface Recipe {
 
 export interface Money {
   date: number
-  quantity: number | string
+  quantity: number
   description: string
   id: string
 }
