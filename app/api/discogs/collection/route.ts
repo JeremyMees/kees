@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const perPage = searchParams.get('per_page') || 20;
 
   try {
-    const dis = new Discogs.Client('GroceriesApp/1.0', { userToken: process.env.DISCOGS_TOKEN });
+    const dis = new Discogs.Client('KeesApp/1.0', { userToken: process.env.DISCOGS_TOKEN });
     const col = dis.user().collection();
 
     const collectionData = await new Promise((resolve, reject) => {

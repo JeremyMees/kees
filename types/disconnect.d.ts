@@ -35,10 +35,11 @@ declare module 'disconnect' {
 
   export interface CollectionRelease {
     id: number
-    basic_information: ReleaseBasicInfo
+    instance_id: number
     date_added: string
-    notes: string
+    basic_information: ReleaseBasicInfo
     rating: number
+    folder_id: number
   }
 
   export interface CollectionResponse {

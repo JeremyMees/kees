@@ -19,3 +19,20 @@ export interface Money {
   description: string
   id: string
 }
+
+export interface Vinyl {
+  title: string
+  coverImage: string
+  artists: string[]
+  year: string
+  id: string
+  discogsId: number
+  folderId: number
+}
+
+export interface VinylFolder {
+  name: string
+  count: number
+  id: string
+  discogsId: number
+}

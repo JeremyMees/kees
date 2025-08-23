@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/discogs/sync-vinyl",
+      "schedule": "0 10,22 * * *"
+    },
+    {
+      "path": "/api/discogs/sync-folder",
+      "schedule": "0 10,22 * * *"
+    }
+  ]
+}
