@@ -1,12 +1,9 @@
 import { db, getExistingIds, addNewToBatch, sanitizeFolder } from '@/lib/firebase.server';
 import { NextRequest, NextResponse } from 'next/server';
-import { validateCron } from '@/lib/helper';
 import { Folder } from 'disconnect';
 
 export async function GET(request: NextRequest) {
   try {
-    if (process.env.NODE_ENV === 'production') validateCron(request);
-
     const existingIds = await getExistingIds('vinylFolders', 'discogsId');
     const batch = db.batch();
     let totalAdded = 0;

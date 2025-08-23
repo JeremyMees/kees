@@ -1,12 +1,10 @@
 import { db, getExistingIds, addNewToBatch, sanitizeVinyl } from '@/lib/firebase.server';
 import { NextRequest, NextResponse } from 'next/server';
-import { paginateThroughPages, validateCron } from '@/lib/helper';
+import { paginateThroughPages } from '@/lib/helper';
 import { CollectionRelease } from 'disconnect';
 
 export async function GET(request: NextRequest) {
   try {
-    if (process.env.NODE_ENV === 'production') validateCron(request);
-
     const existingIds = await getExistingIds('vinyls', 'discogsId');
     const batch = db.batch();
     let totalAdded = 0;

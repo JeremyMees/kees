@@ -64,17 +64,3 @@ export async function paginateThroughPages<T>(
     pagesProcessed
   };
 }
-
-export function validateCron(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    throw new Error('CRON_SECRET environment variable is not set');
-  }
-
-  const authHeader = req.headers.get('Authorization');
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    throw new Error('Unauthorized: Invalid or missing Authorization header');
-  }
-}

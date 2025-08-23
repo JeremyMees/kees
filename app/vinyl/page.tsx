@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import ErrorCard from '@/components/ErrorCard'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight, Disc3 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Disc3, CloudDownload } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
@@ -94,6 +94,13 @@ export default function Page() {
     }
   }
 
+  async function syncVinyls() {
+    await fetch('/api/discogs/sync-folder')
+    await fetch('/api/discogs/sync-vinyl')
+    await fetchFolders()
+    await fetchVinyls()
+  }
+
   if (error) {
     return <ErrorCard error={error} title="Error loading collection" />
   }
@@ -107,10 +114,7 @@ export default function Page() {
           {Array.from({ length: 8 }).map((_, i) => (
             <Skeleton
               key={i}
-              className="h-7 rounded-full"
-              style={{
-                width: `${Math.floor(Math.random() * (100 - 70 + 1)) + 70}px`,
-              }}
+              className="h-7 w-20 rounded-full"
             />
           ))}
         </div>
@@ -125,6 +129,14 @@ export default function Page() {
 
   return (
     <div ref={containerRef} className="flex-1 overflow-y-auto content pt-2 pb-8">
+      <Button
+        variant="outline"
+        size="icon"
+        className="absolute right-4 top-4"
+        onClick={syncVinyls}
+      >
+        <CloudDownload />
+      </Button>
       <VinylFilters
         folders={folders}
         selectedFolders={selectedFolders}
