@@ -1,6 +1,7 @@
 import { CollectionRelease, Folder } from 'disconnect';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { DocumentData, getFirestore, WithFieldValue, WriteBatch } from 'firebase-admin/firestore';
+import { Collection } from '@/types/firebase';
 
 if (!getApps().length) {
   initializeApp({
@@ -29,7 +30,7 @@ async function getExistingIds(collection: string, field: string): Promise<Set<nu
 }
 
 interface AddNewToBatchParams<RawData, SanitizedData> {
-  collection: string;
+  collection: Collection;
   field: keyof RawData;
   sanitize: (data: RawData) => SanitizedData;
   batch: WriteBatch;

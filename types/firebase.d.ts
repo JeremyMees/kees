@@ -1,3 +1,5 @@
+export type Collection = 'food' | 'recipes' | 'money' | 'vinyls' | 'vinylFolders'
+
 export type FoodType = 'Other' | 'Fridge' | 'Freezer' | 'Cans' | 'Dry Goods' | 'Bread'
 
 export interface Food {

@@ -1,64 +1,119 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { CollectionRelease, CollectionResponse } from 'disconnect'
 import ErrorCard from '@/components/ErrorCard'
-import PageNavigation from '@/components/PageNavigation'
 import Image from 'next/image'
-import { Disc3, Shuffle, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Disc3 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import Count from '@/components/animation/Count'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { getCollectionData, getPaginatedData } from '@/lib/firebase.browser'
+import type { Vinyl, VinylFolder } from '@/types/firebase'
+import { DocumentSnapshot, WhereFilterOp } from 'firebase/firestore'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 export default function Page() {
-  const [collection, setCollection] = useState<CollectionResponse>()
+  const [vinyls, setVinyls] = useState<Vinyl[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string>()
   const [currentPage, setCurrentPage] = useState(1)
-  const grid = useRef<HTMLDivElement>(null)
+  const [lastDoc, setLastDoc] = useState<DocumentSnapshot | null>(null)
+  const [firstDoc, setFirstDoc] = useState<DocumentSnapshot | null>(null)
+  const [hasNext, setHasNext] = useState(false)
+  const [hasPrev, setHasPrev] = useState(false)
+
+  const [folders, setFolders] = useState<VinylFolder[]>([])
+  const [selectedFolders, setSelectedFolders] = useState<number[]>([])
+
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const perPage = 10
 
-  useEffect(() => {
-    fetchCollection(currentPage)
-  }, [currentPage])
+  useEffect(() => { fetchFolders() }, [])
 
-  async function fetchCollection(page: number) {
+  useEffect(() => { fetchVinyls() }, [selectedFolders])
+
+  async function fetchFolders() {
+    const result = await getCollectionData<VinylFolder>('vinylFolders')
+    setFolders(result)
+  }
+
+  async function fetchVinyls(direction?: 'next' | 'prev') {
     try {
       setLoading(true)
-      const response = await fetch(
-        `/api/vinyl/collection?page=${page}&per_page=${perPage}`
-      )
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch collection data')
+      const filters = [];
+      
+      if (selectedFolders.length > 0) {
+        filters.push({ field: 'folderId', operator: 'in' as WhereFilterOp, value: selectedFolders });
       }
-
-      const data = await response.json()
-      setCollection(data)
+      
+      const result = await getPaginatedData<Vinyl>(
+        {
+          col: 'vinyls',
+          orderByField: 'title',
+          direction,
+          startAfterDoc: direction === 'next' ? lastDoc || undefined : undefined,
+          endBeforeDoc: direction === 'prev' ? firstDoc || undefined : undefined,
+          perPage,
+          filters,
+        }
+      )
+      
+      setVinyls(result.result)
+      setLastDoc(result.lastDoc)
+      setFirstDoc(result.firstDoc)
+      setHasNext(result.hasNext)
+      setHasPrev(result.hasPrev)
+      
+      if (direction === 'next') setCurrentPage(prev => prev + 1)
+      else if (direction === 'prev') setCurrentPage(prev => Math.max(1, prev - 1))
+      else setCurrentPage(1)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
   }
-
-  function handlePageChange(newPage: number) {
-    grid.current?.scrollTo({ top: 0, behavior: 'smooth' })
-    setCurrentPage(newPage)
+  
+  function nextPage() {
+    if (hasNext) {
+      fetchVinyls('next')
+      if (containerRef.current) {
+        containerRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }
+  }
+  
+  function prevPage() {
+    if (hasPrev) {
+      fetchVinyls('prev')
+      if (containerRef.current) {
+        containerRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }
   }
 
   if (error) {
     return <ErrorCard error={error} title="Error loading collection" />
   }
 
-  const noItems = !collection || !collection.releases?.length
+  const noItems = !vinyls.length
 
   if (loading && noItems) {
     return (
       <div className="flex-1 overflow-y-auto content pt-2 pb-8">
-        <Skeleton className="w-full h-[66px] mb-4" />
+        <div className="flex flex-wrap gap-1 mb-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton
+              key={i}
+              className="h-7 rounded-full"
+              style={{
+                width: `${Math.floor(Math.random() * (100 - 70 + 1)) + 70}px`,
+              }}
+            />
+          ))}
+        </div>
         <VinylCardGrid>
           {Array.from({ length: perPage }).map((_, i) => (
             <Skeleton key={i} className="w-full aspect-square" />
@@ -68,72 +123,69 @@ export default function Page() {
     )
   }
 
-  if (noItems) {
-    return <p className="text-muted-foreground">No collection data found.</p>
-  }
-
-  const vinyls = collection.releases.map((release) => (
-    <VinylCard key={release.id} release={release} />
-  ))
-
   return (
-    <div ref={grid} className="flex-1 overflow-y-auto content pt-2 pb-8">
-      <RandomVinyl items={collection.pagination.items} />
-      <VinylCardGrid>{vinyls}</VinylCardGrid>
-      {!loading && (
-        <PageNavigation
-          page={collection.pagination.page}
-          pages={collection.pagination.pages}
-          perPage={perPage}
-          onPageChange={handlePageChange}
-          className="mt-6"
-        />
+    <div ref={containerRef} className="flex-1 overflow-y-auto content pt-2 pb-8">
+      <VinylFilters
+        folders={folders}
+        selectedFolders={selectedFolders}
+        setSelectedFolders={setSelectedFolders}
+      />
+      <VinylCardGrid>
+        {vinyls.map((vinyl) => (
+          <VinylCard key={vinyl.id} vinyl={vinyl} />
+        ))}
+      </VinylCardGrid>
+      {!loading && (hasNext || hasPrev) && (
+        <div className="mt-6 flex items-center justify-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={prevPage}
+            disabled={!hasPrev}
+          >
+            <ChevronLeft />
+          </Button>
+          <span className="text-sm">
+            {currentPage}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={nextPage}
+            disabled={!hasNext}
+          >
+            <ChevronRight />
+          </Button>
+        </div>
       )}
     </div>
   )
 }
 
-function RandomVinyl({ items }: { items: number }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const timer = useRef<NodeJS.Timeout>(null)
-  const random = Math.random() * items
+interface VinylFiltersProps {
+  folders: VinylFolder[]
+  selectedFolders: number[]
+  setSelectedFolders: (folders: number[]) => void
+}
 
-  function toggle() {
-    const newIsOpen = !isOpen
-    setIsOpen(newIsOpen)
-
-    if (newIsOpen) {
-      timer.current = setTimeout(() => setIsOpen(false), 3000)
-    } else if (timer.current) {
-      clearTimeout(timer.current)
-    }
-  }
-
+function VinylFilters(props: VinylFiltersProps) {
+  const { folders, selectedFolders, setSelectedFolders } = props
+  
   return (
-    <div className="border bg-card rounded-lg mb-4">
-      <div className="p-4 flex items-center justify-between">
-        <span className="font-semibold">Select Random Vinyl</span>
-        <Button
-          variant="outline"
-          size="icon"
-          className="size-8"
-          onClick={toggle}
-        >
-          {isOpen ? <X /> : <Shuffle />}
-        </Button>
-      </div>
-      <div
-        className={`
-          overflow-hidden transition-all duration-300 ease-in-out
-          ${isOpen ? 'h-[73px] opacity-100' : 'h-0 opacity-0'}`}
-      >
-        {isOpen && (
-          <div className="p-4 border-t">
-            <Count end={random} delay={300} className="text-4xl font-bold" />
-          </div>
-        )}
-      </div>
-    </div>
+    <ToggleGroup
+      onValueChange={(e) => { setSelectedFolders(e.map(item => Number(item))) }}
+      value={selectedFolders.map(id => id.toString())}
+      wrap
+      variant="outline"
+      type="multiple"
+      className="mb-4"
+    >
+      {folders.map((folder) => (
+        <ToggleGroupItem key={folder.discogsId} value={folder.discogsId.toString()}>
+          {folder.name}
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
   )
 }
 
@@ -152,15 +204,15 @@ function VinylCardGrid({ children }: { children: React.ReactNode }) {
   )
 }
 
-function VinylCard({ release }: { release: CollectionRelease }) {
+function VinylCard({ vinyl }: { vinyl: Vinyl }) {
   return (
     <div className="aspect-square bg-card rounded-lg overflow-hidden relative">
       <div className="relative w-full h-full flex items-center justify-center">
-        {release.basic_information.cover_image ? (
+        {vinyl.coverImage ? (
           <>
             <Image
-              src={release.basic_information.cover_image}
-              alt={release.basic_information.title}
+              src={vinyl.coverImage}
+              alt={vinyl.title}
               className="w-full h-full object-cover"
               width={100}
               height={100}
@@ -174,17 +226,15 @@ function VinylCard({ release }: { release: CollectionRelease }) {
       </div>
 
       <h3 className="font-bold text-lg mb-1 line-clamp-2 absolute top-2 left-2">
-        {release.basic_information.title}
+        {vinyl.title}
       </h3>
 
       <div className="absolute bottom-2 left-2 flex flex-col">
         <span className="text-sm font-semibold line-clamp-1">
-          {release.basic_information.artists
-            .map((artist) => artist.name)
-            .join(', ')}
+          {vinyl.artists.join(', ')}
         </span>
         <span className="text-sm font-semibold line-clamp-1">
-          {release.basic_information.year || 'Unknown Year'}
+          {vinyl.year || 'Unknown Year'}
         </span>
       </div>
     </div>
