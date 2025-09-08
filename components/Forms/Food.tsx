@@ -79,12 +79,20 @@ export default function FoodForm({
             <FormItem className="w-full">
               <FormControl>
                 <RadioGroup
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value)
+                  }}
                   value={field.value}
                   className="flex flex-wrap gap-2"
                 >
                   {foodTypes.map((type) => (
-                    <RadioGroupTag key={type} value={type}>
+                    <RadioGroupTag 
+                      key={type} 
+                      value={type}
+                      onClick={() => {
+                        form.handleSubmit(onSubmit)()
+                      }}
+                    >
                       {type}
                     </RadioGroupTag>
                   ))}
