@@ -44,7 +44,7 @@ export default function Page() {
   }, [])
 
   return (
-    <div className="flex flex-col gap-6 content pt-2 max-h-full overflow-y-auto">
+    <div className="flex flex-col gap-6 content pt-2 pb-20 max-h-full overflow-y-auto">
       <RecipeForm onAdd={(recipe) => create(recipesCollection, recipe)} />
       <AlertDialog>
         <ul ref={list} className="flex flex-col pb-8 overflow-y-auto">

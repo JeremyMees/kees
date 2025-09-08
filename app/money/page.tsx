@@ -42,7 +42,7 @@ export default function Page() {
   }, [])
   
   return (
-    <div className="flex flex-col gap-6 content pt-2 max-h-full overflow-y-auto">
+    <div className="flex flex-col gap-6 content pt-2 pb-20 max-h-full overflow-y-auto">
       <MoneyForm onAdd={(money) => create(moneyCollection, money)} />
       <AlertDialog>
         <div className="flex flex-col gap-2 pb-8">

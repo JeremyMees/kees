@@ -58,7 +58,7 @@ export default function Page() {
   const typeOrder: FoodType[] = ['Other', 'Dry Goods', 'Fridge', 'Bread', 'Freezer', 'Cans']
 
   return (
-    <div className="flex flex-col gap-6 content pt-2 max-h-full overflow-y-auto">
+    <div className="flex flex-col gap-6 content pt-2 pb-20 max-h-full overflow-y-auto">
       <FoodForm onAdd={(food) => create(foodsCollection, food)} />
       <AlertDialog>
         <div className="flex flex-col pb-8">

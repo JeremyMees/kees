@@ -128,7 +128,7 @@ export default function Page() {
   }
 
   return (
-    <div ref={containerRef} className="flex-1 overflow-y-auto content pt-2 pb-8">
+    <div ref={containerRef} className="flex-1 overflow-y-auto content pt-2 pb-20">
       <Button
         variant="outline"
         size="icon"
