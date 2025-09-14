@@ -10,10 +10,6 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
-import {
-  RadioGroup,
-  RadioGroupTag,
-} from "@/components/ui/radio-group"
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Food, FoodType } from '@/types/firebase'
@@ -72,36 +68,22 @@ export default function FoodForm({
           </Button>
         </div>
 
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <RadioGroup
-                  onValueChange={(value) => {
-                    field.onChange(value)
-                  }}
-                  value={field.value}
-                  className="flex flex-wrap gap-2"
-                >
-                  {foodTypes.map((type) => (
-                    <RadioGroupTag 
-                      key={type} 
-                      value={type}
-                      onClick={() => {
-                        form.handleSubmit(onSubmit)()
-                      }}
-                    >
-                      {type}
-                    </RadioGroupTag>
-                  ))}
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex flex-wrap gap-2">
+          {foodTypes.map((type) => (
+            <Button
+              key={type}
+              type="button"
+              variant="outline"
+              className="rounded-full text-xs h-auto py-1 px-2"
+              onClick={() => {
+                form.setValue('type', type)
+                form.handleSubmit(onSubmit)()
+              }}
+            >
+              {type}
+            </Button>
+          ))}
+        </div>
       </form>
     </Form>
   )
